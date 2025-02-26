@@ -1,0 +1,380 @@
+
+
+<abp-card [cardStyle]="{width:'100%'}">
+    <abp-card-header>
+        <div class="switch-btns-container text-center p-2">
+            <h3 abp-card-title>Register With</h3>
+            <div class="btn-group btn-toggle"> 
+                <button  (click)="toggleRegisterView('nano')" [ngClass]="{'selected': nanoFormSelected}" class="nano-form-btn btn  btn-lg ">Nano Form</button>
+                <button  (click)="toggleRegisterView('excel')" [ngClass]="{'selected': excelFileSelected}" class="excel-file-btn btn btn-lg selected">Excel File</button>
+            </div>
+        </div>
+    </abp-card-header>
+    <abp-card-body>
+        <!-- ======== excel File ======== -->
+        <div *ngIf="excelFileSelected" class="row my-2">
+            <div class="download-btn-container col-md-6">
+                <div class="row">
+                    <div class="col-md-12 text-center mb-3">
+                        <h5>
+                            Download Excel Template And Fill It With Your Info.
+                        </h5>
+                    </div>
+                    <div class="col-md-12 text-center ">
+                        <button (click)="downloadExcelTemplate()">
+                            <i class="bi bi-download"></i>
+                            <span> Download</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="upload-btn-container col-md-6">
+                <div class="row">
+                    <div class="col-md-12 text-center mb-3">
+                        <h5>
+                            Upload Excel Template Fillen with your Info.
+                        </h5>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <!-- Hidden file input -->
+                        <input 
+                        type="file" 
+                        #fileInput 
+                        style="display: none" 
+                        (change)="onFileChange($event)" 
+                        accept=".xlsx, .xls" 
+                        />
+
+                        <!-- Button to trigger file selection -->
+                        <button (click)="fileInput.click()">
+                            <i class="bi bi-upload"></i>
+                            <span>Upload</span>
+                        </button>
+                    </div>
+                </div>
+                
+                
+            </div>
+
+            <div class="col-md-12 mb-5 text-center">
+                <button class="btn btn-primary mt-5" (click)="processExcel()">Submit</button>
+            </div>
+            
+        </div>
+       
+        
+    </abp-card-body>
+    <abp-card-body>
+        <!-- ======== Nano Register Form ======== -->
+        <div *ngIf="nanoFormSelected" class="nano-health">
+            <div class="lpx-wizard d-flex w-100">
+                <ul class="lpx-wizard-list d-lg-flex p-0 w-100">
+                    <li class="lpx-wizard-item active" data-wizard-item="">
+                        <div class="lpx-wizard-number flex-center rounded-2 mb-2 mx-auto"><strong>1</strong></div>
+                        <h5 class="mb-0 text-dark"><strong>{{'::pharmacyDetails:title' | abpLocalization}}</strong></h5>
+                        <small class="text-muted">{{'::pharmacyDetails:desc' | abpLocalization}}</small>
+                    </li>
+                    <li class="lpx-wizard-item" data-wizard-item="">
+                        <div class="lpx-wizard-number flex-center rounded-2 mb-2 mx-auto"> <strong>2</strong></div>
+                        <h5 class="mb-0 text-dark"><strong>{{'::pharmacyLocation:title' | abpLocalization}}</strong></h5>
+                        <small class="text-muted">{{'::pharmacyLocation:desc' | abpLocalization}}</small>
+                    </li>
+                    <li class="lpx-wizard-item active" data-wizard-item="">
+                        <div class="lpx-wizard-number flex-center rounded-2 mb-2 mx-auto"> <strong>3</strong></div>
+                        <h5 class="mb-0 text-dark"><strong>{{'::pharmacyWorking:title'|abpLocalization}}</strong></h5>
+                        <small class="text-muted">{{'::pharmacyWorking:desc'|abpLocalization}}</small>
+                    </li>
+                </ul>
+            </div>
+        
+            <!-- ======= Pharmacy Basic Details tab ======== -->
+            <form #f="ngForm" [formGroup]="registerform" (ngSubmit)="submit()">
+                <div class="lpx-wizard-content active" data-form-tab="">
+                    <div class="row my-2">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <h5 class="text-dark"><strong>{{'::pharmacyDetails:subTitle' | abpLocalization}}</strong></h5>
+                            </div>
+                            
+                            <div class="row" formGroupName="basicForm">
+                                <div class="col-xl-6 mb-3">
+                                    <input type="text" formControlName="name" placeholder="{{'::pharmacyDetails:name' | abpLocalization}} *" class="form-control" id="parmacyName">
+                                </div>
+                                <div class="col-xl-6 mb-3">
+                                    <ngx-intl-tel-input
+                                        [cssClass]="'form-control'"
+                                        [preferredCountries]="preferredCountries"
+                                        [enableAutoCountrySelect]="true"
+                                        [enablePlaceholder]="true"
+                                        [customPlaceholder]="'Pharmacy Phone *'"
+                                        [searchCountryFlag]="true"
+                                        [searchCountryField]="[
+                                        SearchCountryField.Iso2,
+                                        SearchCountryField.Name
+                                        ]"
+                                        [selectFirstCountry]="false"
+                                        [selectedCountryISO]="CountryISO.UnitedArabEmirates"
+                                        [maxLength]="15"
+                                        [phoneValidation]="true"
+                                        [separateDialCode]="separateDialCode"
+                                        [numberFormat]="PhoneNumberFormat.National"
+                                        name="pharmacy_phone"
+                                        formControlName="pharmacy_phone"
+                                    >
+                                    </ngx-intl-tel-input>
+                                    
+                                    @if(registerform.get('basicForm')?.get('pharmacy_phone')?.invalid && registerform.get('basicForm')?.get('pharmacy_phone')?.touched){
+                                        <div class="text-danger">
+                                            Invalid Phone Number  
+                                       </div>
+                                    }
+                                </div>
+            
+                                <div class="col-xl-6 mb-3">     
+                                    <input type="text" formControlName="pharmacist" placeholder="{{'::pharmacyDetails:pharmacist' | abpLocalization}} *" class="form-control" id="PharmacistName">
+                                </div>
+    
+                                <div class="col-xl-6 mb-3">
+                                    <ngx-intl-tel-input
+                                        [cssClass]="'form-control'"
+                                        [preferredCountries]="preferredCountries"
+                                        [enableAutoCountrySelect]="true"
+                                        [enablePlaceholder]="true"
+                                        [customPlaceholder]="'Personal Phone *'"
+                                        [searchCountryFlag]="true"
+                                        [searchCountryField]="[
+                                        SearchCountryField.Iso2,
+                                        SearchCountryField.Name
+                                        ]"
+                                        [selectFirstCountry]="false"
+                                        [selectedCountryISO]="CountryISO.UnitedArabEmirates"
+                                        [maxLength]="15"
+                                        [phoneValidation]="true"
+                                        [separateDialCode]="separateDialCode"
+                                        [numberFormat]="PhoneNumberFormat.National"
+                                        name="personal_phone"
+                                        formControlName="personal_phone"
+                                    >
+                                    </ngx-intl-tel-input>
+                                    @if(registerform.get('basicForm')?.get('personal_phone')?.invalid && registerform.get('basicForm')?.get('personal_phone')?.touched){
+                                        <div class="text-danger">
+                                            Invalid Phone Number  
+                                       </div>
+                                    }
+                                </div>
+    
+                                <div class="col-xl-6 mb-3">        
+                                    <input type="email" formControlName="email" placeholder="{{'::Email' | abpLocalization}} *" class="form-control" id="email">
+                                </div>
+    
+                                <div class="col-xl-6 mb-3">        
+                                    <input type="text" formControlName="license" placeholder="{{'::License' | abpLocalization}} *" class="form-control" id="license">
+                                </div>
+                                <div class="col-xl-6 mb-3">
+                                   <div class="input-icons">
+                                    <i *ngIf="showPassword" class="fa fa-eye fa-lg icon" (click)="showPassword = !showPassword"></i>
+                                    <i *ngIf="!showPassword" class="fa fa-eye-slash fa-lg icon" (click)="showPassword = !showPassword"></i> 
+                                    <input type="password" formControlName="password" (input)="checkPasswordStrength($event.target.value)" class="form-control input-field" [abpShowPassword]="showPassword" placeholder="{{'::Password' | abpLocalization}} *" id="Password">
+                                </div>
+                                <div *ngIf="ProgressBarStatsObject?.text">
+                                    Strength: {{ ProgressBarStatsObject.text }}<br>
+                                    Color: {{ ProgressBarStatsObject.bgColor }}<br>
+                                    Width: {{ ProgressBarStatsObject.width }}
+                                </div>
+                                <abp-password-complexity-indicator *ngIf="ProgressBarStatsObject?.width > 0" [progressBar]="ProgressBarStatsObject"></abp-password-complexity-indicator>
+
+                                </div>
+                                <div class="col-xl-6 mb-3">
+                                    <div class="input-icons">
+                                        <i *ngIf="showPassword" class="fa fa-eye fa-lg icon" (click)="showPassword = !showPassword"></i>
+                                        <i *ngIf="!showPassword" class="fa fa-eye-slash fa-lg icon" (click)="showPassword = !showPassword"></i> 
+                                        <input type="password" formControlName="confirm_password" class="form-control input-field" [abpShowPassword]="showPassword" placeholder="{{'::ConfirmPassword' | abpLocalization}} *" id="confirmPassword">
+                                    </div>
+                                </div>
+                                <!-- ====== Images Section ====== -->
+                                <div class="mb-2">
+                                    <h5 class="text-dark"><strong>{{'::pharmacyDetails:image' | abpLocalization}}</strong></h5>
+                                </div>
+
+                                <div class="col-xl-6 mb-3">
+                                    <input type="file" class="form-control" (change)="selectBannarImg($event)"  id="banner" name="banner-img" accept="image/png, image/jpeg"/>
+                                </div>
+                                <div class="col-xl-6 mb-3">
+                                    <input type="file" class="form-control" (change)="selectProfileImg($event)"  id="Profile" name="Profile-img" accept="image/png, image/jpeg"/>
+                                </div>
+
+                                <abp-modal size="ExtraLarg"  [(visible)]="isBannerModalOpen">
+                                    <ng-template #abpHeader>
+                                      <h3>Banner Image</h3>
+                                    </ng-template>
+                                  
+                                    <ng-template #abpBody>
+                                        <div class="bannar-img-container">
+                                            <img [src]="bannerPreview" class="preview" />
+                                        </div>
+                                    </ng-template>
+                                  
+                                    <ng-template #abpFooter>
+                                      <button type="button" class="btn btn-secondary" abpClose>Close</button>
+                                    </ng-template>
+                                </abp-modal>
+                                  <!-- ====== Profile Image Modal ====== -->
+                                <abp-modal [(visible)]="isProfileModalOpen">
+                                    <ng-template #abpHeader>
+                                      <h3>Profile Image</h3>
+                                    </ng-template>
+                                  
+                                    <ng-template #abpBody>
+                                        <div class="profile-img-container">
+                                            <img [src]="profilePreview" class="preview" />
+                                        </div>
+                                    </ng-template>
+                                  
+                                    <ng-template #abpFooter>
+                                      <button type="button" class="btn btn-secondary" abpClose>Close</button>
+                                    </ng-template>
+                                </abp-modal>
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- ======= Pharmacy Location And Place ======== -->
+                <div class="lpx-wizard-content" data-form-tab="">
+                    <div class="row my-2">
+                        <div class="col-12">
+                            <div class="row" formGroupName="locationForm"> 
+                                <div class="col-md-12 my-2">
+                                    <label>{{'Search a Place' | abpLocalization}}</label>
+                                    <input type="text" #searchBox formControlName="placeSearch" class="form-control place-search" id="placeSearch">
+                                </div>
+                                
+                                <div style="padding: 12px;border-radius: 10px;">
+                                    <div #mapContainer id="map" style="height: 400px; width: 100%;border-radius: 10px;"></div>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <input style="height: 70px;" class="form-control" type="text" [value]="selectedPlaceName" readonly>
+    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ======= Pharmacy Working Days ======== -->
+                <div class="lpx-wizard-content" data-form-tab="">
+                    <div class="row my-2">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <h5 class="text-dark"><strong>{{'pharmacyWorking.subTitle'|abpLocalization}}</strong></h5>
+                            </div>
+                        
+                            <div class="row" formGroupName="workingHoursForm">
+    
+                                <div class="btn-container col-md-9">
+                                    <div class="row day-hours">
+                                        <div class="col" *ngFor="let dayControl of daysArray.controls; let i = index" >
+                                            <button type="button" (click)="toggleDay(i)" [ngClass]="{'selected': dayControl.get('enabled')?.value}">
+                                                {{ dayControl.get('day')?.value }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="form-check col-md-3" >
+                                    <input class="form-check-input" formControlName="sameHours" type="checkbox" value="" id="sameHours">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                      {{'pharmacyWorking.sameTime'|abpLocalization}}
+                                    </label>
+                                </div>
+    
+                                @if(registerform.get('workingHoursForm.sameHours')?.value){
+                                    <div class="time-inputs mt-5 row">
+                                        
+                                        <div class="col check24">
+                                            <input type="checkbox" formControlName="is24Hours"> Is 24 Hours?
+                                        </div>
+                                        @if(!registerform.get('workingHoursForm.is24Hours')?.value){
+                                            <div class="col inputs">
+                                                <input placeholder="From *" step="900" onfocus="this.type='time'" class="form-control m-1" formControlName="from">
+                                            </div>
+                                            <div class="col inputs" >
+                                                <input placeholder="To *" step="900" onfocus="this.type='time'" class="form-control m-1" formControlName="to">
+                                            </div>
+                                        } 
+                                   </div> 
+                                }
+                                @else{
+                                    <div class="working-hourse-actions col-12" formArrayName="days">
+                                
+                                        <div  *ngFor="let dayControl of daysArray.controls; let i = index" [formGroupName]="i">
+                                         
+                                            <div *ngIf="dayControl.get('enabled')?.value">
+                                               <div class="time-inputs mt-5 row">
+                                                    <div class="day-name col-md-6">
+                                                        {{ dayControl.get('day')?.value }}
+                                                    </div>
+                                                    <div class="col">
+                                                        <input type="checkbox" formControlName="is24Hours" (change)="toggle24Hours(i)"> Is 24 Hours?
+                                                    </div>
+                                                    <div class="col inputs" *ngIf="!dayControl.get('is24Hours')?.value">
+                                                        <input placeholder="From *" step="900" onfocus="this.type='time'" class="form-control m-1" formControlName="from">
+                                                    </div>
+                                                    <div class="col inputs" *ngIf="!dayControl.get('is24Hours')?.value">
+                                                        <input placeholder="To *" step="900" onfocus="this.type='time'" class="form-control m-1" formControlName="to">
+                                                    </div>
+                                               </div> 
+                                               <hr>
+                                            </div>
+                                            
+                                        </div>
+                                        
+                                    </div>
+                                }
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    
+                    <div class="col-12 col-xl-12 mr-auto">
+                        <div class="lpx-wizard-buttons d-flex justify-content-end mt-5">
+                            <button class="btn btn-outline-secondary m-1" type="button" style="opacity: 1;">
+                                {{'Cancle' | abpLocalization}}
+                            </button>
+                            <button class="btn btn-outline-secondary m-1" type="button" (click)="nextPrev(-1)" data-btn-previous="true" style="opacity: 1;">
+                                {{'back' | abpLocalization}}
+                            </button>
+                            @if(readyToSubmit){
+                                <button class="btn btn-primary m-1" type="submit">
+                                    <i class="bi bi-check" width="100" height="100"></i> {{'submit' | abpLocalization}} 
+                                </button>
+                            }
+                            <button class="btn btn-primary next-btn m-1" type="button" (click)="nextPrev(1)" data-btn-next="true" style="opacity: 1;">
+                                <i class="bi bi-check" width="100" height="100"></i> {{'Next' | abpLocalization}} 
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+        
+    </abp-card-body>
+    <abp-card-footer>
+       <small>By Submitting This Form You Agree Our Terms And Conditions.</small>
+    </abp-card-footer>
+  </abp-card> 
+
+
+
+  <!-- <div class="switch-btns-container text-center p-2">
+    <div class="btn-group btn-toggle"> 
+        <button  (click)="toggleRegisterView('nano')" [ngClass]="{'selected': nanoFormSelected}" class="nano-form-btn btn  btn-lg ">Register With Nano Form</button>
+        <button  (click)="toggleRegisterView('excel')" [ngClass]="{'selected': excelFileSelected}" class="excel-file-btn btn btn-lg selected">Register With Excel File</button>
+    </div>
+ </div> -->
+
+
+
